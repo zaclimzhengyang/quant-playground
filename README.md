@@ -22,6 +22,5 @@ python3 app/orderbook/main.py
 ## #2 Dollar-Cost-Averaging ETF Backtester
 A simple dollar-cost-averaging (DCA) backtester for ETFs listed on NYSE Arca. The script in `app/dca_etf/dca_etf.py` downloads historical prices (via `yfinance`), simulates monthly DCA from `START_DATE` to `END_DATE`, ranks tickers by return, and saves the top 10 results.
 
-![img.png](top10_etfs_combined.png)
-
+![top10_etfs_combined.png](app/dca_etf/top10_etfs_combined.png)
 📅 Last Updated: 21 September 2025
