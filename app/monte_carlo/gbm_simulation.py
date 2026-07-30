@@ -89,15 +89,17 @@ def mc_simulation_gbm(ticker: str,
     sigma = daily_returns.std().item()
 
     delta_t = 1.0
-    # Ensure we are selecting the last scalar value from the 'Adj Close' column
+    # Ensure we are selecting the last scalar value from the adjusted close column
     if isinstance(stock_data, pd.Series):
         S0 = float(stock_data.iloc[-1])
     elif isinstance(stock_data, pd.DataFrame):
         if 'Adj Close' in stock_data.columns:
             S0 = float(stock_data['Adj Close'].iloc[-1])
+        elif ticker in stock_data.columns:
+            S0 = float(stock_data[ticker].iloc[-1])
         else:
             print("Debug: stock_data columns:", stock_data.columns)
-            raise ValueError("'Adj Close' column not found in stock_data. Available columns: " + ", ".join(stock_data.columns))
+            raise ValueError("Expected column ('Adj Close' or ticker name) not found in stock_data. Available columns: " + ", ".join(stock_data.columns))
     else:
         raise ValueError("Unexpected data structure: stock_data is neither a Series nor a DataFrame")
 
