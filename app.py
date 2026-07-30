@@ -291,7 +291,11 @@ def run_lstm_forecast(ticker: str, start_date: str, end_date: str):
         # Display summary metrics
         col1, col2, col3 = st.columns(3)
         with col1:
-            st.metric("Last Actual Price", f"${float(result['last_actual_price']):.2f}")
+            # Ensure the value is a scalar
+            last_actual_price = result['last_actual_price']
+            if isinstance(last_actual_price, pd.Series):
+                last_actual_price = last_actual_price.iloc[0]
+            st.metric("Last Actual Price", f"${float(last_actual_price):.2f}")
         with col2:
             st.metric("Forecast Start", result['forecast_start_date'].strftime('%Y-%m-%d'))
         with col3:
