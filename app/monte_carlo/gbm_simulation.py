@@ -89,7 +89,8 @@ def mc_simulation_gbm(ticker: str,
     sigma = daily_returns.std().item()
 
     delta_t = 1.0
-    S0 = float(stock_data.iloc[-1])
+    # Ensure we are selecting the last scalar value from the 'Adj Close' column
+    S0 = float(stock_data.iloc[-1]) if isinstance(stock_data, pd.Series) else float(stock_data['Adj Close'].iloc[-1])
 
     # --- simulate all runs at once ---
     Z = np.random.normal(size=(horizon - 1, runs))  # 99 x 100
