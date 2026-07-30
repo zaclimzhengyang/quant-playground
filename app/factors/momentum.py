@@ -23,19 +23,23 @@ def generate_momentum_scores(price_df: pd.DataFrame, windows: list[int] = [30, 6
     - Moving average crossover is a classic trend-following strategy.
     - Momentum Score = (Price_today / Price_60_days_ago) - 1
     """
-    if "Adj Close" not in price_df.columns or price_df.empty:
+    if price_df is None or price_df.empty or "Adj Close" not in price_df.columns:
+        return None
+
+    px = price_df["Adj Close"]
+    if isinstance(px, pd.DataFrame):
+        px = px.iloc[:, 0]
+    px = px.dropna()
+    if px.empty:
         return None
 
     scores = {}
     for w in windows:
-        # If price data has at least 60 rows, it looks 60 days back from the last row.
-        # Else, it just uses the very first row (avoids negative index).
-        idx = max(0, len(price_df) - w)
-        try:
-            ret = price_df["Adj Close"].iloc[-1] / price_df["Adj Close"].iloc[idx] - 1
-            scores[w] = round(float(ret), 4)
-        except (KeyError, ZeroDivisionError, IndexError):
+        idx = max(0, len(px) - w)
+        base = px.iloc[idx]
+        if base == 0 or pd.isna(base):
             return None
+        scores[w] = round(float(px.iloc[-1] / base - 1), 4)
 
     return scores
 
