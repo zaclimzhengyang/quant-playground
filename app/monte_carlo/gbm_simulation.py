@@ -90,7 +90,12 @@ def mc_simulation_gbm(ticker: str,
 
     delta_t = 1.0
     # Ensure we are selecting the last scalar value from the 'Adj Close' column
-    S0 = float(stock_data.iloc[-1]) if isinstance(stock_data, pd.Series) else float(stock_data['Adj Close'].iloc[-1])
+    if isinstance(stock_data, pd.Series):
+        S0 = float(stock_data.iloc[-1])
+    elif isinstance(stock_data, pd.DataFrame) and 'Adj Close' in stock_data.columns:
+        S0 = float(stock_data['Adj Close'].iloc[-1])
+    else:
+        raise ValueError("Unexpected data structure: 'Adj Close' column not found in stock_data")
 
     # --- simulate all runs at once ---
     Z = np.random.normal(size=(horizon - 1, runs))  # 99 x 100
